@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { forwardRef } from "react";
+import { HTMLAttributes, forwardRef } from "react";
 // icons
 import { Icon } from "@iconify/react";
 // @mui
@@ -13,7 +13,7 @@ interface IconifyProps extends HTMLAttributes<HTMLSpanElement> {
   sx?: object;
 }
 
-const Iconify = forwardRef(({ icon, width = 20, sx, ...other }, ref) => (
+const Iconify = forwardRef <HTMLSpanElement, IconifyProps>(({ icon, width = 20, sx, ...other }, ref) => (
   <Box
     ref={ref}
     component={Icon}
@@ -23,10 +23,10 @@ const Iconify = forwardRef(({ icon, width = 20, sx, ...other }, ref) => (
   />
 ));
 
-Iconify.propTypes = {
-  sx: PropTypes.object,
-  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-};
+// Iconify.propTypes = {
+//   sx: PropTypes.object,
+//   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+//   icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+// };
 
 export default Iconify;

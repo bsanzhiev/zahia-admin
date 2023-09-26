@@ -98,9 +98,7 @@ export default function MenuPage() {
   const [filterName, setFilterName] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleOpenMenu = (event: {
-    currentTarget: React.SetStateAction<null>;
-  }) => {
+  const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
 
