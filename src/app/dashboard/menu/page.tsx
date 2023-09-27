@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { filter } from "lodash";
+import { sentenceCase } from "change-case";
+
 import {
   Avatar,
   Box,
@@ -23,8 +25,9 @@ import {
 } from "@mui/material";
 
 // components
-import Iconify from '../../../components/iconify/';
-import Scrollbar from '../../../components/scrollbar';
+import Iconify from "../../../components/iconify/";
+import Scrollbar from "../../../components/scrollbar";
+import Label from "../../../components/label";
 
 // sections
 import {
@@ -34,6 +37,7 @@ import {
 
 //mock
 import PRODUCTS_LIST from "../../../_mock/products";
+// import PRODUCTS_LIST from "../../../_mock/users";
 
 // ----------------------------------------------------------------------
 
@@ -196,7 +200,7 @@ export default function MenuPage() {
             filterName={filterName}
             onFilterName={handleFilterByName}
           />
-          <Scrollbar>
+          <Scrollbar sx={undefined}>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <ProductsListHead
@@ -215,12 +219,16 @@ export default function MenuPage() {
                       const {
                         id,
                         name,
-                        product,
                         cover,
                         create_at,
                         stock,
                         price,
                         publish,
+                        role,
+                        status,
+                        company,
+                        avatarUrl,
+                        isVerified,
                       } = row;
                       const selectedUser = selected.indexOf(name) !== -1;
 
@@ -252,13 +260,27 @@ export default function MenuPage() {
                             </Stack>
                           </TableCell>
 
-                          <TableCell align="left">{create_at}</TableCell>
+                          <TableCell align="left">{create_at.toISOString()}</TableCell>
 
                           <TableCell align="left">{stock}</TableCell>
 
-                          <TableCell align="left">{price}</TableCell>
+                          {/* <TableCell align="left">
+                            {isVerified ? "Yes" : "No"}
+                          </TableCell> */}
+                          <TableCell align="left">
+                            {price}$
+                          </TableCell>
 
-                          <TableCell align="left">{publish}</TableCell>
+
+                          <TableCell align="left">
+                            <Label
+                              color={
+                                (publish === "draft") || "published"
+                              }
+                            >
+                              {sentenceCase(publish)}
+                            </Label>
+                          </TableCell>
 
                           <TableCell align="right">
                             <IconButton
@@ -287,7 +309,6 @@ export default function MenuPage() {
                           <Typography variant="h6" paragraph>
                             Not Found
                           </Typography>
-
                           <Typography variant="body2">
                             No Resuls found for &nbsp;
                           </Typography>
@@ -317,6 +338,7 @@ export default function MenuPage() {
         anchorEl={open}
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        // TODO Depricated
         PaperProps={{
           sx: {
             p: 1,
