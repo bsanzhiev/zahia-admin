@@ -272,9 +272,12 @@ export default function MenuPage() {
 
 													<TableCell align="left">
 														<Label
-															color={
-																publish === "published" ? "success" : "warning"
-															}
+															{...({
+																color:
+																	publish === "published"
+																		? "success"
+																		: "warning",
+															} as any)}
 														>
 															{sentenceCase(publish)}
 														</Label>
