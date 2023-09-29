@@ -224,11 +224,6 @@ export default function MenuPage() {
 												stock,
 												price,
 												publish,
-												role,
-												status,
-												company,
-												avatarUrl,
-												isVerified,
 											} = row;
 											const selectedUser = selected.indexOf(name) !== -1;
 
