@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 // @mui
 import { CssBaseline } from "@mui/material";
 import {
@@ -20,6 +20,12 @@ import componentsOverride from "./overrides";
 CustomThemeProvider.propTypes = {
 	children: PropTypes.node,
 };
+
+/**
+ * @param {Object} props - The component's props.
+ * @param {React.ReactNode} props.children - The children prop.
+ * @returns {JSX.Element} - The rendered CustomThemeProvider component.
+ */
 
 export default function CustomThemeProvider({ children }) {
 	const themeOptions = useMemo(
