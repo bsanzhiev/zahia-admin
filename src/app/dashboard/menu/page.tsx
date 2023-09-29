@@ -253,7 +253,7 @@ export default function MenuPage() {
                               alignItems="center"
                               spacing={2}
                             >
-                              <Avatar alt={name} src={cover} />
+                              <Avatar alt={name} src={cover} variant="rounded" />
                               <Typography variant="subtitle2" noWrap>
                                 {name}
                               </Typography>
@@ -275,7 +275,7 @@ export default function MenuPage() {
                           <TableCell align="left">
                             <Label
                               color={
-                                (publish === "draft") || "published"
+                                (publish === "warning") || "success"
                               }
                             >
                               {sentenceCase(publish)}
