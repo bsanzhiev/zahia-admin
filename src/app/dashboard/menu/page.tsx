@@ -102,7 +102,7 @@ export default function MenuPage() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const handleOpenMenu = (event) => {
+	const handleOpenMenu = (event: any) => {
 		setOpen(event.currentTarget);
 	};
 
@@ -188,7 +188,7 @@ export default function MenuPage() {
 					</Typography>
 					<Button
 						variant="contained"
-						startIcon={<Iconify icon="eva:plus-fill" />}
+						startIcon={<Iconify {...({ icon: "eva:plus-fill" } as any)} />}
 					>
 						New Product
 					</Button>
