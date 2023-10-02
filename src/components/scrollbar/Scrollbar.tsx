@@ -1,18 +1,17 @@
-import { PropTypes } from "prop-types";
 import { memo } from "react";
 // @mui
-import { Box } from "@mui/material";
+import { Box, SxProps } from "@mui/material";
 // styles - is it appropriate?
 import { StyledRootScrollbar, StyledScrollbar } from "./styles";
 
 //--------------------------------------------------------------
 
-Scrollbar.PropTypes = {
-  sx: PropTypes.object,
-  children: PropTypes.node,
-};
+interface ScrollbarProps {
+  sx?: SxProps;
+  children?: React.ReactNode; 
+}
 
-function Scrollbar({ children, sx, ...other }) {
+function Scrollbar({ children, sx, ...other }: ScrollbarProps) {
   const userAgent =
     typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
 

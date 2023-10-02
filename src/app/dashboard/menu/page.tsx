@@ -221,7 +221,7 @@ export default function MenuPage() {
 												name,
 												cover,
 												create_at,
-												stock,
+												quantity,
 												price,
 												publish,
 											} = row;
@@ -263,7 +263,7 @@ export default function MenuPage() {
 														{create_at.toISOString()}
 													</TableCell>
 
-													<TableCell align="left">{stock}</TableCell>
+													<TableCell align="left">{quantity}</TableCell>
 
 													{/* <TableCell align="left">
                             {isVerified ? "Yes" : "No"}
