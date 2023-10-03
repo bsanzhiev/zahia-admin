@@ -26,8 +26,8 @@ import {
 
 // components
 import Iconify from "../../../components/iconify/";
-import Scrollbar from "../../../components/scrollbar";
 import Label from "../../../components/label";
+import Scrollbar from "@/components/scrollbar/Scrollbar";
 
 // sections
 import {
@@ -37,9 +37,11 @@ import {
 
 //mock
 import PRODUCTS_LIST from "../../../_mock/products";
+import BorderLinearProgress from "@/components/linearProgress/BorderLinearProgress";
 // import PRODUCTS_LIST from "../../../_mock/users";
 
 // ----------------------------------------------------------------------
+// Удалил Scrollbar - ненужная залупа, а погоди
 
 const TABLE_HEAD = [
 	{ id: "product", label: "Product", alignRight: false },
@@ -110,6 +112,10 @@ export default function MenuPage() {
 		setOpen(null);
 	};
 
+	const handleEdit = () => {
+		console.log("Open!");
+	}
+
 	const handleRequestSort = (
 		event: any,
 		property: React.SetStateAction<string>
@@ -175,193 +181,214 @@ export default function MenuPage() {
 	const isNotFound = !filteredUsers.length && !!filterName;
 
 	return (
-		<>
-			<Container>
-				<Stack
-					direction="row"
-					alignItems="center"
-					justifyContent="space-between"
-					mb={5}
-				>
-					<Typography variant="h4" gutterBottom>
-						Menu
-					</Typography>
-					<Button
-						variant="contained"
-						startIcon={<Iconify {...({ icon: "eva:plus-fill" } as any)} />}
+			<Scrollbar>
+				<Container>
+					<Stack
+						direction="row"
+						alignItems="center"
+						justifyContent="space-between"
+						mb={5}
 					>
-						New Product
-					</Button>
-				</Stack>
+						<Typography variant="h4" gutterBottom>
+							Menu
+						</Typography>
+						<Button
+							variant="contained"
+							startIcon={<Iconify {...({ icon: "eva:plus-fill" } as any)} />}
+						>
+							New Product
+						</Button>
+					</Stack>
 
-				<Card>
-					<ProductsListToolbar
-						numSelected={selected.length}
-						filterName={filterName}
-						onFilterName={handleFilterByName}
-					/>
-					<Scrollbar sx={undefined}>
-						<TableContainer sx={{ minWidth: 800 }}>
-							<Table>
-								<ProductsListHead
-									order={order}
-									orderBy={orderBy}
-									headLabel={TABLE_HEAD}
-									rowCount={PRODUCTS_LIST.length}
-									numSelected={selected.length}
-									onRequestSort={handleRequestSort}
-									onSelectAllClick={handleSelectAllClick}
-								/>
-								<TableBody>
-									{filteredUsers
-										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-										.map((row) => {
-											const {
-												id,
-												name,
-												cover,
-												create_at,
-												quantity,
-												price,
-												publish,
-											} = row;
-											const selectedUser = selected.indexOf(name) !== -1;
+					<Card>
+						<ProductsListToolbar
+							numSelected={selected.length}
+							filterName={filterName}
+							onFilterName={handleFilterByName}
+						/>
+						<>
+							<TableContainer sx={{ minWidth: 800 }}>
+								<Table>
+									<ProductsListHead
+										order={order}
+										orderBy={orderBy}
+										headLabel={TABLE_HEAD}
+										rowCount={PRODUCTS_LIST.length}
+										numSelected={selected.length}
+										onRequestSort={handleRequestSort}
+										onSelectAllClick={handleSelectAllClick}
+									/>
+									<TableBody>
+										{filteredUsers
+											.slice(
+												page * rowsPerPage,
+												page * rowsPerPage + rowsPerPage
+											)
+											.map((row) => {
+												const {
+													id,
+													name,
+													cover,
+													create_at,
+													quantity,
+													stock,
+													price,
+													publish,
+												} = row;
+												const selectedUser = selected.indexOf(name) !== -1;
 
-											return (
-												<TableRow
-													hover
-													key={id}
-													tabIndex={-1}
-													role="checkbox"
-													selected={selectedUser}
-												>
-													<TableCell padding="checkbox">
-														<Checkbox
-															checked={selectedUser}
-															onChange={(event) => handleClick(event, name)}
-														/>
-													</TableCell>
-
-													<TableCell component="th" scope="row" padding="none">
-														<Stack
-															direction="row"
-															alignItems="center"
-															spacing={2}
-														>
-															<Avatar
-																alt={name}
-																src={cover}
-																variant="rounded"
+												return (
+													<TableRow
+														hover
+														key={id}
+														tabIndex={-1}
+														role="checkbox"
+														selected={selectedUser}
+													>
+														<TableCell padding="checkbox">
+															<Checkbox
+																checked={selectedUser}
+																onChange={(event) => handleClick(event, name)}
 															/>
-															<Typography variant="subtitle2" noWrap>
-																{name}
-															</Typography>
-														</Stack>
-													</TableCell>
+														</TableCell>
 
-													<TableCell align="left">
-														{create_at.toISOString()}
-													</TableCell>
+														<TableCell
+															component="th"
+															scope="row"
+															padding="none"
+														>
+															<Stack
+																direction="row"
+																alignItems="center"
+																spacing={2}
+															>
+																<Avatar
+																	alt={name}
+																	src={cover}
+																	variant="rounded"
+																/>
+																<Typography variant="subtitle2" noWrap>
+																	{name}
+																</Typography>
+															</Stack>
+														</TableCell>
 
-													<TableCell align="left">{quantity}</TableCell>
+														<TableCell align="left">
+															{create_at.toISOString()}
+														</TableCell>
 
-													{/* <TableCell align="left">
+														<TableCell align="left">
+															<Stack direction="column" spacing={1}>
+																<BorderLinearProgress
+																	variant="determinate"
+																	value={70}
+																/>
+																<Typography variant="caption" noWrap>
+																	{quantity} {stock}
+																</Typography>
+															</Stack>
+														</TableCell>
+
+														{/* <TableCell align="left">
                             {isVerified ? "Yes" : "No"}
                           </TableCell> */}
-													<TableCell align="left">{price}$</TableCell>
 
-													<TableCell align="left">
-														<Label
-															{...({
-																color:
-																	publish === "published"
-																		? "success"
-																		: "warning",
-															} as any)}
-														>
-															{sentenceCase(publish)}
-														</Label>
-													</TableCell>
+														<TableCell align="left">${price}</TableCell>
 
-													<TableCell align="right">
-														<IconButton
-															size="large"
-															color="inherit"
-															onClick={handleOpenMenu}
-														>
-															<Iconify icon={"eva:more-vertical-fill"} />
-														</IconButton>
-													</TableCell>
-												</TableRow>
-											);
-										})}
-									{emptyRows > 0 && (
-										<TableRow style={{ height: 53 * emptyRows }}>
-											<TableCell colSpan={6} />
-										</TableRow>
-									)}
-								</TableBody>
+														<TableCell align="left">
+															<Label
+																{...({
+																	color:
+																		publish === "published"
+																			? "success"
+																			: "warning",
+																} as any)}
+															>
+																{sentenceCase(publish)}
+															</Label>
+														</TableCell>
 
-								{isNotFound && (
-									<TableBody>
-										<TableRow>
-											<TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-												<Paper sx={{ textAlign: "center" }}>
-													<Typography variant="h6" paragraph>
-														Not Found
-													</Typography>
-													<Typography variant="body2">
-														No Resuls found for &nbsp;
-													</Typography>
-												</Paper>
-											</TableCell>
-										</TableRow>
+														<TableCell align="right">
+															<IconButton
+																size="large"
+																color="inherit"
+																onClick={handleOpenMenu}
+															>
+																<Iconify icon={"eva:more-vertical-fill"} />
+															</IconButton>
+														</TableCell>
+													</TableRow>
+												);
+											})}
+										{emptyRows > 0 && (
+											<TableRow style={{ height: 53 * emptyRows }}>
+												<TableCell colSpan={6} />
+											</TableRow>
+										)}
 									</TableBody>
-								)}
-							</Table>
-						</TableContainer>
-					</Scrollbar>
 
-					<TablePagination
-						rowsPerPageOptions={[5, 10, 25]}
-						component="div"
-						count={PRODUCTS_LIST.length}
-						rowsPerPage={rowsPerPage}
-						page={page}
-						onPageChange={handleChangePage}
-						onRowsPerPageChange={handleChangeRowsPerPage}
-					/>
-				</Card>
-			</Container>
+									{isNotFound && (
+										<TableBody>
+											<TableRow>
+												<TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+													<Paper sx={{ textAlign: "center" }}>
+														<Typography variant="h6" paragraph>
+															Not Found
+														</Typography>
+														<Typography variant="body2">
+															No Resuls found for &nbsp;
+														</Typography>
+													</Paper>
+												</TableCell>
+											</TableRow>
+										</TableBody>
+									)}
+								</Table>
+							</TableContainer>
+						</>
 
-			<Popover
-				open={Boolean(open)}
-				anchorEl={open}
-				onClose={handleCloseMenu}
-				anchorOrigin={{ vertical: "top", horizontal: "right" }}
-				// TODO Depricated
-				PaperProps={{
-					sx: {
-						p: 1,
-						width: 140,
-						"& .MuiMenuItem-root": {
-							px: 1,
-							typography: "body2",
-							borderradius: 0.75,
+						<TablePagination
+							rowsPerPageOptions={[5, 10, 25]}
+							component="div"
+							count={PRODUCTS_LIST.length}
+							rowsPerPage={rowsPerPage}
+							page={page}
+							onPageChange={handleChangePage}
+							onRowsPerPageChange={handleChangeRowsPerPage}
+						/>
+					</Card>
+				</Container>
+
+				<Popover
+					disableScrollLock={true}
+					open={Boolean(open)}
+					anchorEl={open}
+					onClose={handleCloseMenu}
+					anchorOrigin={{ vertical: "top", horizontal: "left" }}
+					transformOrigin={{vertical:'top', horizontal:'right'}}
+					// TODO Depricated
+					PaperProps={{
+						sx: {
+							p: 1,
+							width: 140,
+							"& .MuiMenuItem-root": {
+								px: 1,
+								typography: "body2",
+								borderradius: 0.75,
+							},
 						},
-					},
-				}}
-			>
-				<MenuItem>
-					<Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-					Edit
-				</MenuItem>
+					}}
+				>
+					<MenuItem>
+						<Iconify onClick={handleEdit} icon={"eva:edit-fill"} sx={{ mr: 2 }} />
+						Edit
+					</MenuItem>
 
-				<MenuItem sx={{ color: "error.main" }}>
-					<Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
-					Delete
-				</MenuItem>
-			</Popover>
-		</>
+					<MenuItem sx={{ color: "error.main" }}>
+						<Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
+						Delete
+					</MenuItem>
+				</Popover>
+			</Scrollbar>
 	);
 }
