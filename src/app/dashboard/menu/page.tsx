@@ -43,10 +43,11 @@ import BorderLinearProgress from "@/components/linearProgress/BorderLinearProgre
 
 // ----------------------------------------------------------------------
 // Удалил Scrollbar - ненужная залупа, а погоди
+// Дело в теме, нужно настроить тему
 
 const TABLE_HEAD = [
 	{ id: "product", label: "Product", alignRight: false },
-	{ id: "product", label: "Description", alignRight: false },
+	{ id: "description", label: "Description", alignRight: false },
 	{ id: "create_at", label: "Create at", alignRight: false },
 	{ id: "stock", label: "Stock", alignRight: false },
 	{ id: "price", label: "Price", alignRight: false },
@@ -105,7 +106,6 @@ export default function MenuPage() {
 	const [orderBy, setOredrBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
-
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 	const handleOpenMenu = (event: any) => {
