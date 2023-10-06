@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { filter } from "lodash";
-import Scrollbar from "@/components/scrollbar/Scrollbar";
-import { ProductsListHead } from "@/sections/@dashboard/menu";
+// import Scrollbar from "@/components/scrollbar/Scrollbar";
 import {
 	Box,
 	Card,
@@ -19,21 +18,36 @@ import {
 	Typography,
 } from "@mui/material";
 
+import { OrderListHead, OrderListToolbar } from "@/sections/@dashboard/order";
+
 // mock
-import ORDERS_LIST from "@/_mock/orders";
+import ORDERSLIST from "@/_mock/orders";
 
-// -------------------------------------------------------
+type SortDirection = "asc" | "desc";
 
-const TABLE_HEAD = [
+interface HeadCell {
+  id: string;
+  label: string;
+  alignRight: boolean;
+}
+
+interface OrderItems {
+	id: string;
+	code: string;
+	date: Date;
+	items: number;
+	price: number;
+	status: string;
+}
+
+const TABLE_HEAD: HeadCell[] = [
 	{ id: "order", label: "Order", alignRight: false },
 	{ id: "date", label: "Date", alignRight: false },
 	{ id: "items", label: "Items", alignRight: false },
 	{ id: "price", label: "Price", alignRight: false },
 	{ id: "status", label: "Status", alignRight: false },
-	{ id: "" },
+	{ id: "", label: "", alignRight: false },
 ];
-
-// -------------------------------------------------------
 
 function descendingComparator(
 	a: { [x: string]: number },
@@ -55,7 +69,7 @@ function getComparator(order: string, orderBy: string) {
 		: (a: any, b: any) => -descendingComparator(a, b, orderBy);
 }
 
-//TODO что за _user?
+//TODO _user
 function applySortFilter(
 	array: any[],
 	comparator: { (a: any, b: any): number; (arg0: any, arg1: any): any },
@@ -80,20 +94,27 @@ function applySortFilter(
 	return stabilizedThis.map((el: any[]) => el[0]);
 }
 
-export default function Orders() {
-	const [order, setOrder] = useState("asc");
-	const [orderBy, setOredrBy] = useState("code");
+export default function OrdersPage() {
+	const [order, setOrder] = useState<SortDirection>("asc");
+	const [orderBy, setOredrBy] = useState<string>("");
 	const [selected, setSelected] = useState<number[] | string[]>([]);
-	const [filterOrder, setFilterOrder] = useState();
+	const [filterOrder, setFilterOrder] = useState<string | number>();
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [filterName, setFilterName] = useState<string>("");
 
 	// ----------------------------------------------------
 
-	const handleRequestSort = (
-		event: any,
-		property: React.SetStateAction<string>
-	) => {
+	// const handleRequestSort = (
+	// 	event: any,
+	// 	property: React.SetStateAction<string>
+	// ) => {
+	// 	const isAsc = orderBy === property && order === "asc";
+	// 	setOrder(isAsc ? "desc" : "asc");
+	// 	setOredrBy(property);
+	// };
+
+	const handleRequestSort = (property: string) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
 		setOredrBy(property);
@@ -101,18 +122,23 @@ export default function Orders() {
 
 	const handleSelectAllClick = (event: { target: { checked: any } }) => {
 		if (event.target.checked) {
-			const newSelecteds = ORDERS_LIST.map((n) => n.code);
+			const newSelecteds = ORDERSLIST.map((n) => n.code);
 			setSelected(newSelecteds);
 			return;
 		}
 		setSelected([]);
 	};
 
-	const filteredOrders = applySortFilter(
-		ORDERS_LIST,
+	const filteredOrders: OrderItems[] = applySortFilter(
+		ORDERSLIST,
 		getComparator(order, orderBy),
-		filterOrder || ''
+		filterOrder || ""
 	);
+
+	const emptyRows =
+	page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ORDERSLIST.length) : 0;
+
+	const isNotFound = !filteredOrders.length && !!filterName;
 
 	const selectedNumbers: number[] =
 		typeof filterOrder === "number"
@@ -166,6 +192,11 @@ export default function Orders() {
 		setRowsPerPage(parseInt(event.target.value, 10));
 	};
 
+	const handleFilterByName = (event: { target: { value: string } }) => {
+		setPage(0);
+		setFilterName(event.target.value);
+	};
+
 	// ----------------------------------------------------
 
 	return (
@@ -183,12 +214,27 @@ export default function Orders() {
 				</Stack>
 
 				<Card>
-					<Box sx={{ backgroundColor: "grey", mb: 5 }}>OrdersListToolbar</Box>
+					<OrderListToolbar
+						numSelected={selected.length}
+						filterName={filterName}
+						onFilterName={handleFilterByName}
+					/>
 					<>
 						<TableContainer sx={{ minWidth: 800 }}>
 							<Table>
+								<OrderListHead
+									order={order}
+									orderBy={orderBy}
+									headLabel={TABLE_HEAD}
+									rowCount={ORDERSLIST.length}
+									numSelected={selected.length}
+									onRequestSort={handleRequestSort}
+									onSelectAllClick={handleSelectAllClick}
+								/>
 								<TableBody>
-									{ORDERS_LIST.map((row) => {
+									{filteredOrders
+										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+										.map((row) => {
 											const { id, code, date, items, price, status } = row;
 											const selectedOrder = selected.indexOf(code) !== -1;
 											return (
@@ -223,9 +269,8 @@ export default function Orders() {
 
 													<TableCell align="left">{status}</TableCell>
 
-													<TableCell align="right" padding="none"></TableCell>
+													<TableCell align="right" padding="none">Foooo</TableCell>
 
-													<TableCell></TableCell>
 												</TableRow>
 											);
 										})}
@@ -237,7 +282,7 @@ export default function Orders() {
 					<TablePagination
 						rowsPerPageOptions={[5, 10, 25]}
 						component="div"
-						count={ORDERS_LIST.length}
+						count={ORDERSLIST.length}
 						rowsPerPage={rowsPerPage}
 						page={page}
 						onPageChange={handleChangePage}

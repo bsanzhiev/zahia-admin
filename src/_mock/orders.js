@@ -1,6 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { sample } from "lodash";
 
+// interface OrderItems {
+// 	id: string;
+// 	code: string;
+// 	date: Date;
+// 	items: number;
+// 	price: number;
+// 	status: string;
+// }
+
 const orders = [...Array(10)].map((_, index) => ({
 	id: faker.string.uuid(),
 	code: faker.string.numeric(5),

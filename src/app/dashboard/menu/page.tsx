@@ -42,7 +42,7 @@ import BorderLinearProgress from "@/components/linearProgress/BorderLinearProgre
 // import PRODUCTS_LIST from "../../../_mock/users";
 
 // ----------------------------------------------------------------------
-// Удалил Scrollbar - ненужная залупа, а погоди
+// Удалил Scrollbar - ненужная залупа, а погоди, все равно залупа
 // Дело в теме, нужно настроить тему
 
 const TABLE_HEAD = [
